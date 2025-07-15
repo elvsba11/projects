@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background-color: rgb(0, 0, 0);
+    }
+
+    .cyan-btn {
+      background-color: transparent;
+      color: rgb(0, 242, 255);
+      border: none;
+      padding: 10px 25px;
+      box-shadow: -6px -6px 10px red,
+      6px 6px 10px cyan;
+      margin-bottom: 35px;
+      transition: 0.15s all ease;
+    }
+
+    .cyan-btn:hover {
+      color: rgb(251, 251, 251);
+      box-shadow: 6px 6px 5px red,
+      -6px -6px 25px cyan, 6px 6px 50px red,
+      -6px -6px 100px cyan, 6px 6px 200px red;
+    }
+
+    .cyan-shadow {
+      height: 15px;
+      width: 10px;
+      background-color: rgba(0, 255, 255, 0.351);
+      box-shadow: 0 0 5px cyan, 0 0 25px cyan;
+      margin-bottom: 35px;
+      transition: all .3s;
+    }
+
+    .cyan-shadow:hover {
+      width: 120px;
+      background-color: rgba(0, 255, 255, 0.351);
+      /* box-shadow: 0 0 5px cyan,
+      0 0 25px cyan, 0 0 50px cyan,
+      0 0 100px cyan, 0 0 200px cyan; */
+    }
+
+    .red-btn {
+      background-color: transparent;
+      color: red;
+      border-width: 1px;
+      border-style: solid;
+      border-color: red;
+      padding: 10px 25px;
+      box-shadow: 0 0 5px red,
+      0 0 25px red;
+      transition: 0.15s all;
+    }
+
+    .red-btn:hover {
+      background-color: red;
+      color: rgb(0, 0, 0);
+      box-shadow: 0 0 5px red,
+      0 0 25px red, 0 0 50px red,
+      0 0 100px red, 0 0 200px red;
+    }
+
+    .green-btn {
+      background-color: transparent;
+      color: green;
+      border-width: 1px;
+      border-style: solid;
+      border-color: green;
+      padding: 10px 25px;
+      box-shadow: 0 0 5px green,
+      0 0 25px green;
+      transition: 0.15s all ease;
+    }
+
+    .green-btn:hover {
+      background-color: green;
+      color: rgb(0, 0, 0);
+      box-shadow: 0 0 5px green,
+      0 0 25px green, 0 0 50px green,
+      0 0 100px green, 0 0 200px green;
+    }
+
+    
+  </style>
+</head>
+<body>
+    <button class="cyan-btn">
+      Cyan Button
+    </button>
+
+    <div class="cyan-shadow">
+
+    </div>
+
+    <button class="red-btn">
+      Red Button
+    </button>
+
+    <button class="green-btn">
+      Green Button
+    </button>
+</body>
+</html>
