@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker V1</title>
+</head>
+<body>
+  <div>
+    <input id="expenseName" type="text" placeholder="Expense Name">
+    <input id="expenseAmount" type="text" placeholder="Expense Amount">
+    <button id="btnAddExpense">Add Expense</button>
+  </div>
+  <ul id="showExpenses"></ul>
+  <p id="totalAmount"></p>
+
+  <script>
+    const expenseName = document.getElementById('expenseName');
+    const expenseAmount = document.getElementById('expenseAmount');
+    const btnAddExpense = document.getElementById('btnAddExpense');
+    const showExpenses = document.getElementById('showExpenses');
+    const totalAmount = document.getElementById('totalAmount');
+    let allTotal = [];
+
+    btnAddExpense.addEventListener('click',addExpense)
+
+    //Load Expenses
+    function showExpense(li) {
+      li.textContent = `${expenseName.value} P${expenseAmount.value}`;
+      showExpenses.appendChild(li);
+    }
+
+    //Add expense
+    function addExpense() {
+      const li = document.createElement('li');
+      showExpense(li);
+      deleteExpense(li);
+      const currentAmount = Number(expenseAmount.value);
+      allAmounts(currentAmount);
+      expenseName.value = '';
+      expenseAmount.value = '';
+    }
+
+    //Delete Expense
+    function deleteExpense(li){
+      const currentAmount = Number(expenseAmount.value);
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      li.appendChild(deleteBtn);
+      deleteBtn.addEventListener('click',function(){
+        allTotal = allTotal.filter(function(amount) {
+          return amount !== currentAmount;
+        });
+        li.remove();
+        let total = allTotal.reduce((acc, curr) => acc + curr, 0);
+        totalAmount.textContent = `Total Amount: P${total}`;
+      });
+
+    }
+
+    function allAmounts(currentAmount) {
+      allTotal.push(currentAmount);
+      let total = allTotal.reduce((acc, curr) => acc + curr, 0);
+      totalAmount.textContent = `Total Amount: P${total}`;
+    }
+
+  </script>
+</body>
+</html>

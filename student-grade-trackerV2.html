@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Grade Tracker</title>
+</head>
+<body>
+  <input type="text" id="inputName" placeholder="Name">
+  <input type="number" id="inputGrade" placeholder="Input Grade">
+  <button id="btnAdd">Add Student</button>
+  <ul id="studentList"></ul>
+  <p id="averageGrade"></p>
+
+  <script>
+    const inputName = document.getElementById('inputName');
+    const inputGrade = document.getElementById('inputGrade');
+    const btnAdd = document.getElementById('btnAdd');
+    const studentList = document.getElementById('studentList');
+    const averageGrade = document.getElementById('averageGrade');
+
+    let students = JSON.parse(localStorage.getItem('students')) || [];
+
+    btnAdd.addEventListener('click', addStudent);
+
+    class Student {
+      constructor(name, grade) {
+        this.name = name;
+        this.grade = grade;
+      }
+
+      getStatus() {
+        return this.grade >= 75 ? 'Passed' : 'Failed';
+      }
+    }
+
+    function addStudent() {
+      if (inputName.value === '' || inputGrade.value === '' || Number(inputGrade.value) === 0) {
+        return alert('Name or Grade is missing!');
+      }
+
+      const student = new Student(inputName.value, Number(inputGrade.value));
+
+      const li = document.createElement('li');
+      li.textContent = `Name: ${student.name} | Grade: ${student.grade} | Status: ${student.getStatus()}`;
+
+      deleteStudent(li, student.name, student.grade);
+
+      studentList.appendChild(li);
+
+      students.push({ name: student.name, grade: student.grade });
+      saveStudents();
+
+      inputName.value = '';
+      inputGrade.value = '';
+
+      updateAverage();
+    }
+
+    function deleteStudent(li, studentName, studentGrade) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+
+      li.appendChild(deleteBtn);
+
+      deleteBtn.addEventListener('click', () => {
+        students = students.filter(
+          s => !(s.name === studentName && s.grade === studentGrade)
+        );
+        saveStudents();
+        li.remove();
+        updateAverage();
+      });
+    }
+
+    function saveStudents() {
+      localStorage.setItem('students', JSON.stringify(students));
+    }
+
+    function loadStudents() {
+      studentList.innerHTML = '';
+
+      students.forEach(student => {
+        const s = new Student(student.name, student.grade);
+
+        const li = document.createElement('li');
+        li.textContent = `Name: ${s.name} | Grade: ${s.grade} | Status: ${s.getStatus()}`;
+
+        deleteStudent(li, s.name, s.grade);
+
+        studentList.appendChild(li);
+      });
+
+      updateAverage();
+    }
+
+    function updateAverage() {
+      if (students.length === 0) {
+        averageGrade.textContent = 'Average: 0';
+        return;
+      }
+
+      const total = students.reduce((sum, s) => sum + s.grade, 0);
+      const avg = total / students.length;
+
+      averageGrade.textContent = `Average: ${avg.toFixed(2)}`;
+    }
+
+    loadStudents();
+  </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+</head>
+<body>
+  <div>
+    <input id="inputExpensesName" type="text" placeholder="Expenses Name">
+    <input id="inputAmount" type="text" placeholder="Amount">
+    <button id="btnAddExpenses">Add Expense</button>
+  </div>
+  <ul id="showExpenses"></ul>
+  <hr>
+  <p id="totalAmount"></p>
+  <script>
+    const inputExpensesName = document.getElementById('inputExpensesName');
+    const inputAmount = document.getElementById('inputAmount');
+    const btnAddExpenses = document.getElementById('btnAddExpenses');
+    const showExpenses = document.getElementById('showExpenses');
+    const totalAmount = document.getElementById('totalAmount');
+    let allAmounts = [];
+
+
+    btnAddExpenses.addEventListener('click', function(){
+      const li = document.createElement('li');
+      li.textContent = `${inputExpensesName.value}\t${inputAmount.value}`;
+      
+      const currentAmount = Number(inputAmount.value);
+
+      // Delete Button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.addEventListener('click',function(){
+        allAmounts = allAmounts.filter(function(amount) {
+          return amount !== currentAmount;
+        });
+        li.remove();
+        let total = allAmounts.reduce(function(sum, amount) {
+          return sum + amount;
+        }, 0);
+        totalAmount.textContent = `Total Amount: ₱${total}`;
+      });
+      // sa loob ng list lalagay yung button na delete kada add meron sila button
+      li.appendChild(deleteBtn);
+
+      allAmounts.push(currentAmount);
+      let total = allAmounts.reduce(function(sum, amount) {
+        return sum + amount;
+      }, 0);
+      totalAmount.textContent = `Total Amount: ₱${total}`;
+
+      // show added list
+      showExpenses.appendChild(li);
+      // clear inputs
+      inputExpensesName.value = '';
+      inputAmount.value = '';
+    });
+
+  </script>
+</body>
+</html>

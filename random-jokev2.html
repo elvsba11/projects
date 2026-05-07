@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Joke with Local Storage</title>
+</head>
+<body>
+  <button id="btnJoke">Get Joke</button>
+  <p id="showJoke"></p>
+
+  <script>
+
+    const btnJoke = document.getElementById('btnJoke');
+    const showJoke = document.getElementById('showJoke');
+
+    const saveJoke = localStorage.getItem('saveJoke') || '';
+
+    load();
+
+    btnJoke.addEventListener('click', fetchJoke);
+
+    async function fetchJoke() {
+      try{
+        const res = await fetch('https://icanhazdadjoke.com/', {
+          headers: {'Accept': 'application/json'}
+        });
+
+        const data = await res.json()
+        showJoke.textContent = data.joke;
+
+        saveStorage(data.joke);
+
+      } catch (error) {
+        showJoke.textContent = error.error;
+      }
+      
+    }
+
+    function saveStorage(joke) {
+      localStorage.setItem('saveJoke', joke);
+    }
+
+    function load() {
+      if (saveJoke) {
+        showJoke.textContent = saveJoke;
+      }
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" id="inputName">
+  <button id="btnAdd">Add</button>
+  <ul id="showList"></ul>
+
+  <script>
+    const inputName = document.querySelector('#inputName');
+    const btnAdd = document.querySelector('#btnAdd');
+    const showList = document.querySelector('#showList');
+
+    let save = JSON.parse(localStorage.getItem('save')) || [];
+
+    loadNameList();
+
+    btnAdd.addEventListener('click', addName);
+
+    function addName() {
+      const li = document.createElement('li');
+      li.textContent = inputName.value;
+      showList.appendChild(li);
+
+      li.addEventListener('click', () => toggleStrikethrough(li))
+
+      deleteName(li, inputName.value);
+
+      // Save input value
+      save.push(inputName.value);
+      saveStorage();
+      //Clear Input Value
+      inputName.value = '';
+    }
+
+    function toggleStrikethrough(li) {
+      if (li.style.textDecoration === 'line-through') {
+        li.style.textDecoration = 'none';
+      }else {
+        li.style.textDecoration = 'line-through';
+      }
+    }
+
+    function deleteName(li, name) {
+      const btnDelete = document.createElement('button');
+      btnDelete.textContent = 'Delete';
+      li.appendChild(btnDelete);
+
+      btnDelete.addEventListener('click', () => remove(li, name)); 
+    }
+
+    function remove(li, nameInput) {
+      save = save.filter(name => name !== nameInput);
+      saveStorage();
+      li.remove();
+    }
+
+    function saveStorage(){
+      localStorage.setItem('save',JSON.stringify(save));
+    }
+
+    function loadNameList() {
+      save.forEach(name => {
+        const li = document.createElement('li');
+        li.textContent = name;
+        deleteName(li, name);
+        showList.appendChild(li);
+      });
+  
+    }
+  </script>
+</body>
+</html>

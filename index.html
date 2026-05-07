@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" id="inputNote" placeholder="Add Note">
+  <button id="btnSave">
+    Save Note
+  </button>
+  <p id="showList"></p>
+  <script>
+    const inputNote = document.getElementById('inputNote');
+    const btnSave = document.getElementById('btnSave');
+    const showList = document.getElementById('showList');
+
+    let storage = JSON.parse(localStorage.getItem('storage')) || [];
+
+    loadNote();
+
+    btnSave.addEventListener('click', addNote);
+
+    function addNote() {
+      const li = document.createElement('li');
+      li.textContent = inputNote.value;
+      showList.appendChild(li);
+      deleteNote(li, inputNote.value);
+      
+      //save to storage
+      storage.push(inputNote.value);// ← i-add sa array
+      saveStorage();// ← i-save sa localStorage
+      inputNote.value = '';
+    }
+
+    function deleteNote(li, noteText) {
+      const btnDelete = document.createElement('button');
+      btnDelete.textContent = 'Delete';
+      li.appendChild(btnDelete);
+
+      btnDelete.addEventListener('click', () => {
+        storage = storage.filter(note => note !== noteText) // tanggalin sa array
+        saveStorage(); // i-update ang localStorage
+        li.remove(); // tanggalin sa screen
+      })
+    }
+
+    function saveStorage() {
+      localStorage.setItem('storage', JSON.stringify(storage));
+    }
+
+    function loadNote() {
+      storage.forEach(note => {
+        const li = document.createElement('li');
+        li.textContent = note;
+        deleteNote(li, note); // ← may delete button din!
+        showList.appendChild(li);
+      });
+    }
+    
+  </script>
+</body>
+</html>

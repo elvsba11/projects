@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Search App</title>
+</head>
+<body>
+  <button id="loadBtn">Load Users</button>
+  <table>
+    <thead>
+      <td>Name</td>
+      <td>Email</td>
+    </thead>
+    <tbody id="usersList"></tbody>
+  </table>
+
+  <script>
+    const loadBtn = document.getElementById('loadBtn');
+    const usersList = document.getElementById('usersList');
+
+    loadBtn.addEventListener('click', fetchUser);
+
+    async function fetchUser() {
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/users')
+
+        const data = await res.json();
+        const rows = data.map(user => `
+          <tr>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+          </tr>`
+        ).join("");
+
+        usersList.innerHTML = rows;
+        // console.log(rows)
+        
+      } catch (error) {
+        const p = document.createElement('p');
+        p.textContent = `No users found!`;
+        console.log(error);
+        document.body.appendChild(p);
+        
+      }
+      
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Pokemon</title>
+</head>
+<body>
+  <input type="text" id="searchPokemon" placeholder="Pokemon Name">
+  <button id="btnSearch">Search</button>
+  <p id="showDetails"></p>
+  <img src="" alt="" id="pokemonImg">
+
+  <script>
+    const searchPokemon = document.getElementById('searchPokemon');
+    const btnSearch = document.getElementById('btnSearch');
+    const showDetails = document.getElementById('showDetails');
+    const pokemonImg = document.getElementById('pokemonImg');
+
+    btnSearch.addEventListener('click', fetchURL)
+
+    function fetchURL() {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${searchPokemon.value}`)
+      .then(response => response.json())
+      .then(data => {
+        showDetails.textContent = `Pokemon Name: ${data.name}\n Base Experience: ${data.base_experience}`;
+        pokemonImg.src = data.sprites.front_default;
+        searchPokemon.value = '';
+      })
+      .catch(error => {
+      showDetails.textContent = 'Pokemon not found! Try again. 😅';
+      });
+    }
+  </script>
+</body>
+</html>

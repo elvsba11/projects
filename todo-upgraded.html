@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f3ee;
+      --surface: #ffffff;
+      --border: #e2ddd6;
+      --text: #1a1816;
+      --muted: #8a857e;
+      --accent: #2c2c2c;
+      --high: #c0392b;
+      --med: #d07b00;
+      --low: #2e7d5e;
+      --high-bg: #fdf0ee;
+      --med-bg: #fdf5e6;
+      --low-bg: #edf7f2;
+      --done-text: #b0aba4;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .wrapper {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* --- Header --- */
+    .header {
+      margin-bottom: 2rem;
+    }
+    .header h1 {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    #task-count {
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* --- Input Area --- */
+    .input-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+    #inputTask {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #inputTask:focus { border-color: var(--accent); }
+    #inputTask::placeholder { color: var(--muted); }
+
+    #btnAdd {
+      padding: 9px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    #btnAdd:hover { opacity: 0.85; }
+
+    .priority-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .priority-row span {
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: 2px;
+    }
+    .priority-option {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .priority-option.selected-high { background: var(--high-bg); border-color: var(--high); color: var(--high); font-weight: 500; }
+    .priority-option.selected-med  { background: var(--med-bg);  border-color: var(--med);  color: var(--med);  font-weight: 500; }
+    .priority-option.selected-low  { background: var(--low-bg);  border-color: var(--low);  color: var(--low);  font-weight: 500; }
+
+    /* --- Filter Bar --- */
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* --- Task List --- */
+    #showListTask {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .task-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: opacity 0.2s;
+    }
+    .task-item.done {
+      opacity: 0.6;
+    }
+
+    /* Priority indicator bar on the left */
+    .priority-bar {
+      width: 3px;
+      height: 36px;
+      border-radius: 99px;
+      flex-shrink: 0;
+    }
+    .bar-high { background: var(--high); }
+    .bar-med  { background: var(--med); }
+    .bar-low  { background: var(--low); }
+
+    .task-text {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      line-height: 1.5;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .task-item.done .task-text {
+      text-decoration: line-through;
+      color: var(--done-text);
+    }
+
+    .priority-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-family: 'DM Mono', monospace;
+      flex-shrink: 0;
+    }
+    .tag-high { background: var(--high-bg); color: var(--high); }
+    .tag-med  { background: var(--med-bg);  color: var(--med); }
+    .tag-low  { background: var(--low-bg);  color: var(--low); }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      line-height: 1;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .delete-btn:hover { color: var(--high); }
+
+    /* --- Empty State --- */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: 14px;
+      display: none;
+    }
+    .empty-state.show { display: block; }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <h1>Mga Gagawin</h1>
+    <p><span id="task-count">0</span> tasks na natitira</p>
+  </div>
+
+  <!-- Input Area -->
+  <div class="input-area">
+    <div class="input-row">
+      <input type="text" id="inputTask" placeholder="Ano ang gagawin mo?">
+      <button id="btnAdd">Idagdag</button>
+    </div>
+    <div class="priority-row">
+      <span>Priority:</span>
+      <button class="priority-option selected-high" data-priority="high">High</button>
+      <button class="priority-option" data-priority="med">Medium</button>
+      <button class="priority-option" data-priority="low">Low</button>
+    </div>
+  </div>
+
+  <!-- Filter Buttons -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">Lahat</button>
+    <button class="filter-btn" data-filter="active">Hindi pa tapos</button>
+    <button class="filter-btn" data-filter="done">Tapos na</button>
+    <button class="filter-btn" data-filter="high">High</button>
+    <button class="filter-btn" data-filter="med">Medium</button>
+    <button class="filter-btn" data-filter="low">Low</button>
+  </div>
+
+  <!-- Task List -->
+  <ul id="showListTask"></ul>
+  <div class="empty-state" id="emptyState">Wala pang tasks dito.</div>
+
+</div>
+
+<script>
+  // ============================================================
+  // REFACTOR: Bawat task ay ngayon OBJECT na may:
+  //   - id: unique identifier (ginagamit para sa delete)
+  //   - text: yung pangalan ng task
+  //   - done: true/false — tapos na o hindi
+  //   - priority: 'high', 'med', o 'low'
+  // Mas maganda ito kaysa plain string kasi:
+  //   - Hindi mag-delete ng maling task kung same name
+  //   - Madaling i-save ang done/priority status
+  // ============================================================
+
+  // --- State ---
+  // Kunin ang tasks mula sa localStorage, o empty array kung wala pa
+  let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+  let selectedPriority = 'high'; // default na priority
+  let currentFilter = 'all';     // default na filter
+
+  // --- DOM References ---
+  const inputTask     = document.getElementById('inputTask');
+  const btnAdd        = document.getElementById('btnAdd');
+  const showListTask  = document.getElementById('showListTask');
+  const taskCount     = document.getElementById('task-count');
+  const emptyState    = document.getElementById('emptyState');
+
+  // ============================================================
+  // saveStorage — i-save ang tasks array sa localStorage
+  // Ginagamit natin JSON.stringify para ma-convert ang array
+  // ng objects papuntang string (localStorage ay text lang)
+  // ============================================================
+  function saveStorage() {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+  // ============================================================
+  // generateId — gumawa ng unique ID para sa bawat task
+  // Ginagamit ang Date.now() na milliseconds — unique ito
+  // kasi nag-iiba ang oras bawat second
+  // ============================================================
+  function generateId() {
+    return Date.now().toString();
+  }
+
+  // ============================================================
+  // addTask — ginagawa ang bagong task object at idinaragdag
+  // sa tasks array, tapos nire-render ulit ang lahat
+  // ============================================================
+  function addTask() {
+    const text = inputTask.value.trim(); // .trim() para tanggalin ang spaces sa simula/dulo
+
+    // Validation: huwag mag-add kung walang laman ang input
+    if (text === '') {
+      inputTask.focus();
+      return;
+    }
+
+    // Gumawa ng bagong task object
+    const newTask = {
+      id: generateId(),
+      text: text,
+      done: false,
+      priority: selectedPriority
+    };
+
+    tasks.push(newTask); // idagdag sa array
+    saveStorage();       // i-save sa localStorage
+    renderTasks();       // i-update ang UI
+
+    inputTask.value = ''; // i-clear ang input
+    inputTask.focus();
+  }
+
+  // ============================================================
+  // toggleDone — i-toggle ang done status ng isang task
+  // Hinahanap natin ang task gamit ang id, hindi text —
+  // para walang conflict kahit same name ang dalawang tasks
+  // ============================================================
+  function toggleDone(id) {
+    tasks = tasks.map(task => {
+      if (task.id === id) {
+        return { ...task, done: !task.done }; // spread operator: kopya ng task pero baguhin ang done
+      }
+      return task;
+    });
+    saveStorage();
+    renderTasks();
+  }
+
+  // ============================================================
+  // deleteTask — tanggalin ang task gamit ang id
+  // .filter() ay nagbabalik ng bagong array na wala na yung
+  // task na may matching id
+  // ============================================================
+  function deleteTask(id) {
+    tasks = tasks.filter(task => task.id !== id);
+    saveStorage();
+    renderTasks();
+  }
+
+  // ============================================================
+  // getFilteredTasks — ibalik lang ang tasks na dapat ipakita
+  // batay sa currentFilter na pinili ng user
+  // ============================================================
+  function getFilteredTasks() {
+    if (currentFilter === 'all')    return tasks;
+    if (currentFilter === 'active') return tasks.filter(t => !t.done);
+    if (currentFilter === 'done')   return tasks.filter(t => t.done);
+    // Para sa priority filters (high, med, low):
+    return tasks.filter(t => t.priority === currentFilter);
+  }
+
+  // ============================================================
+  // renderTasks — i-clear ang list at i-rebuild mula sa tasks array
+  // Ito ang pangunahing function na nag-a-update ng UI
+  // Pattern: "clear and re-render" — mas simple kaysa mag-edit ng indibidwal na elements
+  // ============================================================
+  function renderTasks() {
+    showListTask.innerHTML = ''; // i-clear ang list
+
+    const filtered = getFilteredTasks();
+
+    // I-update ang task count (hindi pa done na tasks lang)
+    const remaining = tasks.filter(t => !t.done).length;
+    taskCount.textContent = remaining;
+
+    // Ipakita ang empty state kung walang tasks sa filter
+    if (filtered.length === 0) {
+      emptyState.classList.add('show');
+    } else {
+      emptyState.classList.remove('show');
+    }
+
+    // Gumawa ng li element para sa bawat task
+    filtered.forEach(task => {
+      const li = document.createElement('li');
+      li.className = 'task-item' + (task.done ? ' done' : '');
+
+      // Priority color bar
+      const bar = document.createElement('div');
+      bar.className = `priority-bar bar-${task.priority}`;
+
+      // Task text — i-click para i-toggle ang done
+      const span = document.createElement('span');
+      span.className = 'task-text';
+      span.textContent = task.text;
+      span.addEventListener('click', () => toggleDone(task.id));
+
+      // Priority tag badge
+      const tag = document.createElement('span');
+      tag.className = `priority-tag tag-${task.priority}`;
+      tag.textContent = task.priority === 'med' ? 'medium' : task.priority;
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-btn';
+      delBtn.textContent = '×';
+      delBtn.title = 'I-delete ang task';
+      delBtn.addEventListener('click', () => deleteTask(task.id));
+
+      li.append(bar, span, tag, delBtn);
+      showListTask.appendChild(li);
+    });
+  }
+
+  // ============================================================
+  // Priority selector — i-update ang selectedPriority
+  // at i-update ang visual state ng buttons
+  // ============================================================
+  document.querySelectorAll('.priority-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Tanggalin ang selected class sa lahat
+      document.querySelectorAll('.priority-option').forEach(b => {
+        b.className = 'priority-option';
+      });
+      // Idagdag ang selected class sa na-click
+      const p = btn.dataset.priority;
+      btn.classList.add(`selected-${p}`);
+      selectedPriority = p;
+    });
+  });
+
+  // ============================================================
+  // Filter buttons — i-update ang currentFilter at i-re-render
+  // ============================================================
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderTasks();
+    });
+  });
+
+  // Enter key para mag-add ng task — para hindi kailangang i-click ang button
+  inputTask.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  // I-connect ang Add button
+  btnAdd.addEventListener('click', addTask);
+
+  // ============================================================
+  // Initial load — i-render ang tasks na naka-save sa localStorage
+  // Tinatawag ito isang beses lang pagload ng page
+  // ============================================================
+  renderTasks();
+</script>
+</body>
+</html>

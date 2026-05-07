@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pro Task Manager</title>
+  <style>
+    .completed { text-decoration: line-through; color: gray; }
+    li { margin-bottom: 8px; list-style: none; border-bottom: 1px solid #eee; padding: 5px; }
+    button { margin-left: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <h2>Task Manager 2.0</h2>
+    <input type="text" id="taskInput" placeholder="Anong gagawin mo?">
+    <button id="addBtn">Add Task</button>
+    <ul id="taskList"></ul>
+    <button id="clearBtn">Clear All</button>
+  </div>
+
+  <script>
+    // 1. SELECTORS
+    const taskInput = document.querySelector('#taskInput');
+    const addBtn = document.querySelector('#addBtn');
+    const taskList = document.querySelector('#taskList');
+    const clearBtn = document.querySelector('#clearBtn');
+
+    // 2. STATE (Ang "Source of Truth" natin)
+    // Dito natin binabasa ang data mula sa storage. Kung wala, empty array.
+    let tasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+
+    // 3. CORE FUNCTIONS
+
+    const saveToStorage = () => {
+      localStorage.setItem('myTasks', JSON.stringify(tasks));
+    };
+
+    const renderTasks = () => {
+      // Linisin muna ang listahan bago i-render para hindi mag-duplicate sa screen
+      taskList.innerHTML = '';
+
+      tasks.forEach(task => {
+        const li = document.createElement('li');
+        // Ginagamit natin ang ID para malaman kung anong task ito sa array
+        li.setAttribute('data-id', task.id);
+
+        // UI Structure gamit ang Template Literals
+        li.innerHTML = `
+          <span class="${task.completed ? 'completed' : ''}">${task.text}</span>
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        `;
+
+        taskList.appendChild(li);
+      });
+    };
+
+    const addTask = () => {
+      const text = taskInput.value.trim();
+      if (text === "") return alert("Huwag blanko, lodi!");
+
+      // Gagawa tayo ng object sa halip na string lang
+      const newTask = {
+        id: Date.now(), // Unique ID base sa timestamp
+        text: text,
+        completed: false
+      };
+
+      tasks.push(newTask);
+      saveToStorage();
+      renderTasks();
+      taskInput.value = '';
+    };
+
+    // 4. EVENT DELEGATION (Isang listener lang para sa buong list)
+    taskList.addEventListener('click', (e) => {
+      // Hanapin ang ID ng task kung saan nangyari ang click
+      const li = e.target.parentElement;
+      const id = Number(li.getAttribute('data-id'));
+
+      // DELETE LOGIC
+      if (e.target.classList.contains('delete-btn')) {
+        tasks = tasks.filter(t => t.id !== id);
+        saveToStorage();
+        renderTasks();
+      }
+
+      // EDIT LOGIC
+      if (e.target.classList.contains('edit-btn')) {
+        const taskToEdit = tasks.find(t => t.id === id);
+        const newText = prompt("I-edit ang task:", taskToEdit.text);
+        
+        if (newText !== null && newText.trim() !== "") {
+          taskToEdit.text = newText; // Update yung object sa array
+          saveToStorage();
+          renderTasks();
+        }
+      }
+
+      // TOGGLE COMPLETE (Clicking the text)
+      if (e.target.tagName === 'SPAN') {
+        const taskToToggle = tasks.find(t => t.id === id);
+        taskToToggle.completed = !taskToToggle.completed;
+        saveToStorage();
+        renderTasks();
+      }
+    });
+
+    // INITIALIZATION
+    addBtn.addEventListener('click', addTask);
+    clearBtn.addEventListener('click', () => {
+      if(confirm("Bura lahat?")) {
+        tasks = [];
+        saveToStorage();
+        renderTasks();
+      }
+    });
+
+    // I-load ang mga tasks pagbukas ng page
+    renderTasks();
+
+  </script>
+</body>
+</html>

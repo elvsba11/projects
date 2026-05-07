@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <input type="text" id="inputPokemon" placeholder="Pokemon Name">
+  <button id="btnSearch">Search</button>
+  <p id="show"></p>
+
+  <script>
+
+    const inputPokemon = document.getElementById('inputPokemon');
+    const btnSearch = document.getElementById('btnSearch');
+    const show = document.getElementById('show');
+
+    btnSearch.addEventListener('click', fetchURL)
+
+    function fetchURL() {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${inputPokemon.value}`)
+      .then(response => response.json())
+      .then(data => {
+        show.textContent = `Pokemon Name: ${data.name}\n Base Experience: ${data.base_experience}`;
+        const img = document.createElement('img');
+        img.src = data.sprites.front_default;
+        document.body.appendChild(img);
+      })
+      .catch(error => {
+      show.textContent = 'Pokemon not found! Try again. 😅';
+      });
+    }
+
+    show.innerHTML = '';
+  </script>
+</body>
+</html>

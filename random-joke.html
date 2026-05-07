@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="btnJoke">Get Joke</button>
+  <p id="showJoke"></p>
+
+  <script>
+    const btnJoke =document.getElementById('btnJoke');
+    const showJoke =document.getElementById('showJoke');
+
+    btnJoke.addEventListener('click', getJoke)
+
+    // function getJoke() {
+    //   fetch('https://icanhazdadjoke.com/', {
+    //     headers: { 'Accept': 'application/json' }
+    //   })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     showJoke.textContent = data.joke;
+    //   });
+    // }
+    
+    async function getJoke() {
+      const response = await fetch('https://icanhazdadjoke.com/', {
+        headers: {'Accept': 'application/json'}
+      });
+
+      const data = await response.json();
+      showJoke.textContent = data.joke;
+    }
+
+  </script>
+</body>
+</html>

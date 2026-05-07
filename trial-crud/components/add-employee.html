@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Employee</title>
+</head>
+<body>
+  <h1>Add Employee</h1>
+
+  <div>
+    <input id="firstName" type="text" placeholder="First Name" >
+    <input id="middleName" type="text" placeholder="Middle Name">
+    <input id="lastName" type="text" placeholder="Last Name">
+    <input id="email" type="email" placeholder="Email">
+
+    <div>
+      <button onclick="addEmployee()">Add</button>
+      <button>
+        <a href="index.html">
+          See Employee List
+        </a>
+      </button>
+    </div>
+    <div>
+      <p id="message"></p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../scripts/app.js"></script>
+  <script src="../scripts/add-employee.js"></script>
+</body>
+</html>

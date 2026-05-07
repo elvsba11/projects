@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch</title>
+</head>
+<body>
+  <main>
+    <div>
+      <button id="loadBtn">Load Users</button>
+    </div>
+
+    <section>
+      <table>
+        <thead>
+          <tr>
+            <td>Name</td>
+            <td>Email</td>
+            <td>Phone</td>
+          </tr>
+        </thead>
+        <tbody id="showUsers">
+
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script>
+    const loadBtn = document.querySelector('#loadBtn');
+    const showUsers = document.querySelector('#showUsers');
+
+    loadBtn.addEventListener('click', fetchUsers);
+
+    class User {
+
+      constructor(name, email, phone) {
+        this.name = name
+        this.email = email
+        this.phone = phone
+      }
+
+      getInfo() {
+        return `${this.name} ${this.email} ${this.phone}`;
+      }
+
+    }
+
+
+    async function fetchUsers() {
+      try {
+        const req = await fetch('https://jsonplaceholder.typicode.com/users');
+        const data = await req.json();
+
+        data.forEach(userData => {
+          // gumawa ng bagong User object
+          const user = new User(userData.name, userData.email, userData.phone);
+
+          // gumawa ng bagong row per user
+          const row = document.createElement('tr');
+          const name = document.createElement('td');
+          const email = document.createElement('td');
+          const phone = document.createElement('td');
+
+          name.textContent = user.name;
+          email.textContent = user.email;
+          phone.textContent = user.phone;
+
+          row.appendChild(name);
+          row.appendChild(email);
+          row.appendChild(phone);
+
+          showUsers.appendChild(row);
+        });
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+//for console log
+    // async function fetchUsers() {
+    //   try {
+    //     const req = await fetch('https://jsonplaceholder.typicode.com/users');
+    //     const data = await req.json();
+
+    //     data.forEach(userData => {
+    //       // gumawa ng bagong User object
+    //       const user = new User(userData.name, userData.email, userData.phone);
+
+    //       console.log(user.getInfo());
+          
+        
+    //     });
+
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
+
+    // console.log(fetchUsers());
+    
+
+
+  </script>
+
+</body>
+</html>

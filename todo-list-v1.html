@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List V1</title>
+</head>
+<body>
+  <input id="inputTask" type="text" placeholder="Add Task">
+  <button id="js-btnAddTask">Add Task</button>
+  <ul id="showList"></ul>
+
+  <script>
+    const inputTask = document.getElementById('inputTask');
+    const btnAddTask = document.getElementById('js-btnAddTask');
+    const showList = document.getElementById('showList');
+
+    btnAddTask.addEventListener('click',addTask)
+
+    function addTask() {
+      const li = document.createElement('li');
+      li.textContent = `${inputTask.value}`;
+      showList.appendChild(li);
+      editTask(li);
+      li.addEventListener('click', () => {
+        if (li.style.textDecoration === 'line-through') {
+          li.style.textDecoration = '';
+          li.style.color = 'black';
+        } else {
+          li.style.textDecoration = 'line-through';
+          li.style.color = 'green';
+        }
+      })
+      
+      deleteTask(li);
+      inputTask.value = '';
+    }
+
+    function deleteTask(li) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      li.appendChild(deleteBtn);
+      deleteBtn.addEventListener('click',() => li.remove());
+    }
+
+    function editTask(li) {
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit';
+      editBtn.addEventListener('click', () => {
+      const currentText = li.firstChild.textContent; // kunin ang text
+      li.textContent = ''; // i-clear ang li
+
+      const editInput = document.createElement('input');
+      editInput.value = currentText; // ilagay ang current text sa input
+      li.appendChild(editInput);
+
+      const saveBtn = document.createElement('button');
+      saveBtn.textContent = 'Save';
+      li.appendChild(saveBtn);
+
+      saveBtn.addEventListener('click', () => {
+        li.textContent = editInput.value; // i-save ang bagong text
+        // i-add ulit ang buttons — kasi na-clear ang li!
+        editTask(li);
+        deleteTask(li);
+      });
+    });
+
+    li.appendChild(editBtn)
+    }
+  </script>
+</body>
+</html>

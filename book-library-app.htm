@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Library App</title>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+      font-family: 'Roboto', 'Helvetica', sans-serif;
+      font-size: 18px;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      height: 100px;;
+    }
+
+    .table-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    table{
+      table-layout: fixed;
+      width: 100%;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-collapse: collapse;
+      margin-top: 10px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    thead tr td{
+      padding: 20px;
+    }
+
+    thead:nth-child(n) {
+      background-color: rgba(14, 81, 1, 0.363);
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: rgb(218, 218, 218);
+      text-align: center;
+    }
+
+    tbody tr td {
+      padding: 30px;
+    }
+
+    td {
+      border: 1px solid green;
+    }
+
+    .input-container {
+      text-align: center;
+    }
+
+    input {
+      text-align: center;
+      padding: 10px;
+    }
+
+    .add-btn {
+      padding: 10px;
+      margin-top: 10px;
+      color: green;
+      background-color: white;
+      border: 1px solid green;
+      border-radius: 10px;
+      transition: all .3s ease-out;
+    }
+
+    .add-btn:hover {
+      color: white;
+      background-color: green;
+    }
+
+    .delete-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+  <!-- Input -->
+  <h1>Add Your Favorite Books</h1>
+  <div class="input-container">
+    <input id="inputTitle" type="text" placeholder="Book Title">
+    <input id="inputAuthor" type="text" placeholder="Author">
+    <button id="addBtn" class="add-btn">Add Book</button>
+  </div>
+<!-- Display List -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <td>Title</td>
+          <td>Author</td>
+          <td>Action</td>
+        </tr>
+        
+      </thead>
+      <tbody id="showList">
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- script -->
+  <script>
+
+    const inputTitle = document.querySelector('#inputTitle');
+    const inputAuthor = document.querySelector('#inputAuthor');
+    const addBtn = document.querySelector('#addBtn');
+    const showList = document.querySelector('#showList');
+
+    let books = JSON.parse(localStorage.getItem('books')) || [];
+
+    load();
+
+    addBtn.addEventListener('click', addBook);
+
+    function addBook() {
+      if(inputTitle.value === '' || inputAuthor.value === '') {
+        alert('Book Title or Author is blank please input!');
+        return;
+      }
+
+      const tableRow = document.createElement('tr');
+      const title = document.createElement('td');
+      const author = document.createElement('td');
+      const action = document.createElement('td');
+      
+      title.textContent = inputTitle.value;
+      author.textContent = inputAuthor.value;
+
+      action.appendChild(deleteBook(tableRow));
+      //Append to row
+      tableRow.appendChild(title);
+      tableRow.appendChild(author);
+      tableRow.appendChild(action);
+      // Append to tbody
+      showList.appendChild(tableRow)
+
+      // save to storage
+      books.push({
+        title: inputTitle.value, 
+        author: inputAuthor.value, 
+      });
+      saveBooks();
+      //Reset Inputs
+      inputTitle.value = ''
+      inputAuthor.value = ''
+    }
+
+    function deleteBook(tableRow,title) {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'DELETE'
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.addEventListener('click', () => removeRow(tableRow,title));
+
+      return deleteBtn;
+    }
+
+    function removeRow(tableRow,title) {
+      books = books.filter(book => book.title !== title);
+      saveBooks();
+      tableRow.remove();
+    }
+
+    function saveBooks() {
+      localStorage.setItem('books',JSON.stringify(books));
+    }
+
+    function load() {
+      books.forEach(book => {
+
+        const tableRow = document.createElement('tr');
+        const title = document.createElement('td');
+        const author = document.createElement('td');
+        const action = document.createElement('td');
+        
+        title.textContent = book.title;
+        author.textContent = book.author;
+
+        action.appendChild(deleteBook(tableRow, book.title));
+        //Append to row
+        tableRow.appendChild(title);
+        tableRow.appendChild(author);
+        tableRow.appendChild(action);
+        // Append to tbody
+        showList.appendChild(tableRow)
+
+      })
+    }
+  </script>
+</body>
+</html>

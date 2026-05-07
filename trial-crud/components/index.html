@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee List</title>
+</head>
+<body>
+  <h1>Employee List</h1>
+  <button>
+    <a href="add-employee.html">
+      Add New Employee
+    </a>
+  </button>
+
+  <table>
+
+    <thead>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </thead>
+
+    <tbody id="employeeList">
+
+    </tbody>
+
+  </table>
+
+
+  <!-- Modal for Update or Edit -->
+
+  <!-- Modal -->
+  <div id="editModal" style="display:none;">
+    <div>
+      <h2>Edit Employee</h2>
+      <input type="text" id="editFirstName" placeholder="First Name"/>
+      <input type="text" id="editMiddleName" placeholder="Middle Name"/>
+      <input type="text" id="editLastName" placeholder="Last Name"/>
+      <input type="text" id="editEmail" placeholder="Email"/>
+      <button onclick="updateEmployee()">Save</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../scripts/app.js"></script>
+  <script src="../scripts/read-employee.js"></script>
+  <script src="../scripts/update-employee.js"></script>
+</body>
+</html>

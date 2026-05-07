@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hand Grip Tracker</title>
+</head>
+<body>
+  <input type="text" id="inputReps" placeholder="Reps">
+  <input type="text" id="inputCount" placeholder="Count">
+  <button id="addBtn">Add</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Repetition</th>
+        <th>Count</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody id="showExercises">
+
+    </tbody>
+  </table>
+
+  <script>
+    // Hand Class: Represents a HandGripper
+    class HandGripper {
+      constructor(reps, count) {
+
+        this.reps = reps;
+        this.count = count;
+
+      }
+    }
+
+    // UI Class: Handle UI Exercise
+    class UI {
+      static displayExercise() {
+        const storedExercise = {
+          reps: 5,
+          count: 10,
+        }
+
+        const exercise = storedExercise;
+        exercise.forEach((practice) => UI.addExerciseToList(practice))
+      }
+
+      static addExerciseToList(practice) {
+        const showExercises = document.querySelector('#showExercises');
+
+        
+      }
+    }
+    // Store Class: Handles Storage
+
+    // Event: Display Exercise
+
+    // Event: Add a Book
+
+    // Event: Remove a Book
+  </script>
+</body>
+</html>
